@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>我们和好吧</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #fff0f3, #ffe4ec);
+      font-family: "微软雅黑", sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    h1 {
+      color: #e91e63;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .buttons {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      gap: 20px;
+      z-index: 2;
+    }
+
+    button {
+      padding: 20px 40px;
+      font-size: 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.4s ease, background 0.3s, top 0.4s, left 0.4s;
+    }
+
+    #yesBtn {
+      background-color: #4caf50;
+      color: white;
+      position: relative;
+      z-index: 2;
+    }
+
+    #noBtn {
+      background-color: #f44336;
+      color: white;
+      position: absolute;
+      z-index: 2;
+    }
+
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #ff4d6d;
+      transform: rotate(45deg);
+      animation: floatUp 2s ease-out forwards;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #ff4d6d;
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(45deg) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-200px) rotate(45deg) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    .full-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #ff7eb9, #ff758c);
+      color: white;
+      font-size: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      z-index: 10;
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+  </style>
+</head>
+<body>
+  <h1>你愿意和我和好吗？</h1>
+  <div class="buttons">
+    <button id="yesBtn">和好</button>
+    <button id="noBtn">不和好</button>
+  </div>
+
+  <script>
+    let scale = 1;
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const buttonsContainer = document.querySelector('.buttons');
+
+    // 点击“不和好”，按钮随机移动，“和好”按钮变大
+    noBtn.addEventListener('click', () => {
+      scale += 0.3;
+      yesBtn.style.transform = `scale(${scale})`;
+
+      // 生成新的随机位置（相对于视窗）
+      const maxX = window.innerWidth - noBtn.offsetWidth;
+      const maxY = window.innerHeight - noBtn.offsetHeight;
+
+      const newX = Math.random() * maxX;
+      const newY = Math.random() * maxY;
+
+      noBtn.style.left = `${newX}px`;
+      noBtn.style.top = `${newY}px`;
+
+      // 如果“和好”按钮覆盖全屏
+      if (scale >= 5) {
+        document.body.innerHTML = `
+          <div class="full-screen">
+            我们和好了 ❤️
+          </div>`;
+      }
+    });
+
+    // 点击“和好”按钮时，飘心心动画
+    yesBtn.addEventListener('click', () => {
+      for (let i = 0; i < 10; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.style.left = `${Math.random() * 100}vw`;
+        heart.style.bottom = '0';
+        document.body.appendChild(heart);
+
+        setTimeout(() => {
+          heart.remove();
+        }, 2000);
+      }
+    });
+  </script>
+</body>
+</html>
