@@ -11,6 +11,7 @@
       background: linear-gradient(135deg, #ffe4e1, #ffb6c1);
       font-family: "微软雅黑", sans-serif;
       overflow: hidden;
+      transition: background 1s ease-in-out;
     }
 
     h1 {
@@ -58,7 +59,7 @@
       top: 0; left: 0;
       width: 100vw;
       height: 100vh;
-      background-color: #ff69b4;
+      background-color: rgba(0, 0, 0, 0.6);
       color: white;
       font-size: 48px;
       display: flex;
@@ -71,6 +72,7 @@
       box-sizing: border-box;
       white-space: pre-wrap;
       text-align: center;
+      backdrop-filter: blur(10px);
     }
 
     @keyframes fadeIn {
@@ -78,7 +80,6 @@
       to { opacity: 1; }
     }
 
-    /* 弹窗遮罩 */
     #overlay {
       position: fixed;
       top: 0; left: 0;
@@ -129,7 +130,6 @@
     <button id="noBtn">不和好 ❌</button>
   </div>
 
-  <!-- 大弹窗遮罩 -->
   <div id="overlay">
     <div id="popup">
       <button class="close-btn">关闭</button>
@@ -146,28 +146,33 @@
     const popupContent = document.getElementById('popup-content');
     const closeBtn = popup.querySelector('.close-btn');
 
-    let scale = 1;
     let noClickCount = 0;
 
     yesBtn.addEventListener('click', () => {
-      document.body.innerHTML = `<div class="full-screen">我们和好了 ❤️</div>`;
+      // 替换成你的 GitHub 图片地址
+      const photoURL = 'https://raw.githubusercontent.com/你的用户名/你的仓库名/main/bg.jpg';
+      document.body.style.background = `url('${photoURL}') no-repeat center center / cover`;
+
+      // 清空页面并显示祝福语
+      document.body.innerHTML = `
+        <div class="full-screen">我们和好了 ❤️<br><br>我会变得更好，只为你。</div>
+      `;
     });
 
     noBtn.addEventListener('click', () => {
       noClickCount++;
 
-      if(noClickCount === 3){
-        alert('宝宝别点了');
-      } else if(noClickCount === 5){
-        showPopup(`
-之前你说过我最大的优点是真诚但是我辜负了你的信任（是我错了，不改瞒着你，更不该是挺抱歉的，真的忘不掉，真的想改变自己，我也在慢慢改变
-`);  
-      noClickCount = 0; // 重置计数
-      return;
-    }
+      if (noClickCount === 3) {
+        alert('宝宝别点了，好嘛？');
+      } else if (noClickCount === 5) {
+        showPopup(
+          '之前你说过我最大的优点是真诚\n\n但我却辜负了你的信任\n\n我错了，不该瞒着你，更不该理所当然\n\n我在改变，也想用行动让你重新相信我。'
+        );
+        noClickCount = 0;
+        return;
+      }
 
-    // 每次点击“不和好”，按钮位置随机移动，增加点趣味性
-    moveNoButtonRandomly();
+      moveNoButtonRandomly();
     });
 
     function moveNoButtonRandomly() {
@@ -175,7 +180,6 @@
       const btnWidth = noBtn.offsetWidth;
       const btnHeight = noBtn.offsetHeight;
 
-      // 计算随机位置，保证按钮不跑出容器边界
       const maxX = containerRect.width - btnWidth;
       const maxY = containerRect.height - btnHeight;
 
