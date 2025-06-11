@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>和好页面</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffe4e1, #ffb6c1);
+      font-family: "微软雅黑", sans-serif;
+      overflow: hidden;
+    }
+
+    h1 {
+      color: #e91e63;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    #buttons {
+      position: relative;
+      width: 100%;
+      height: 60vh;
+      margin-top: 40px;
+    }
+
+    button {
+      padding: 20px 40px;
+      font-size: 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: absolute;
+      z-index: 1;
+    }
+
+    #yesBtn {
+      background-color: #4caf50;
+      color: white;
+      left: 30%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #noBtn {
+      background-color: #f44336;
+      color: white;
+      left: 70%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .full-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #ff69b4;
+      color: white;
+      font-size: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      animation: fadeIn 1s ease-in;
+      padding: 30px;
+      overflow-y: auto;
+      box-sizing: border-box;
+      white-space: pre-wrap;
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* 弹窗遮罩 */
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+    }
+
+    #popup {
+      background: white;
+      color: #333;
+      max-width: 90vw;
+      max-height: 80vh;
+      overflow-y: auto;
+      border-radius: 15px;
+      padding: 20px 30px;
+      box-sizing: border-box;
+      font-size: 18px;
+      line-height: 1.6;
+      text-align: left;
+      position: relative;
+    }
+
+    #popup button.close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: #f44336;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>你愿意和我和好吗？</h1>
+  <div id="buttons">
+    <button id="yesBtn">和好 ❤️</button>
+    <button id="noBtn">不和好 ❌</button>
+  </div>
+
+  <!-- 大弹窗遮罩 -->
+  <div id="overlay">
+    <div id="popup">
+      <button class="close-btn">关闭</button>
+      <div id="popup-content"></div>
+    </div>
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const btnContainer = document.getElementById('buttons');
+    const overlay = document.getElementById('overlay');
+    const popup = document.getElementById('popup');
+    const popupContent = document.getElementById('popup-content');
+    const closeBtn = popup.querySelector('.close-btn');
+
+    let scale = 1;
+    let noClickCount = 0;
+
+    yesBtn.addEventListener('click', () => {
+      document.body.innerHTML = `<div class="full-screen">我们和好了 ❤️</div>`;
+    });
+
+    noBtn.addEventListener('click', () => {
+      noClickCount++;
+
+      if(noClickCount === 3){
+        alert('宝宝别点了');
+      } else if(noClickCount === 5){
+        showPopup(`
+之前你说过我最大的优点是真诚但是我辜负了你的信任（是我错了，不改瞒着你，更不该是挺抱歉的，真的忘不掉，真的想改变自己，我也在慢慢改变
+`);  
+      noClickCount = 0; // 重置计数
+      return;
+    }
+
+    // 每次点击“不和好”，按钮位置随机移动，增加点趣味性
+    moveNoButtonRandomly();
+    });
+
+    function moveNoButtonRandomly() {
+      const containerRect = btnContainer.getBoundingClientRect();
+      const btnWidth = noBtn.offsetWidth;
+      const btnHeight = noBtn.offsetHeight;
+
+      // 计算随机位置，保证按钮不跑出容器边界
+      const maxX = containerRect.width - btnWidth;
+      const maxY = containerRect.height - btnHeight;
+
+      const randomX = Math.random() * maxX;
+      const randomY = Math.random() * maxY;
+
+      noBtn.style.left = `${randomX}px`;
+      noBtn.style.top = `${randomY}px`;
+      noBtn.style.transform = 'translate(0, 0)';
+    }
+
+    function showPopup(text) {
+      popupContent.textContent = text;
+      overlay.style.display = 'flex';
+    }
+
+    closeBtn.addEventListener('click', () => {
+      overlay.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
